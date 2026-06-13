@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funnel Analysis Report | Skill 1.2B-1</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .header h1 { color: #667eea; font-size: 1.8rem; margin-bottom: 10px; }
+        .header .subtitle { color: #666; margin-bottom: 20px; }
+        .stats-grid {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 16px;
+            text-align: center;
+            min-width: 150px;
+        }
+        .stat-card .label { font-size: 0.8rem; opacity: 0.9; margin-bottom: 5px; }
+        .stat-card .value { font-size: 2rem; font-weight: bold; }
+        .section {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        .section h2 {
+            color: #333;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        .chart-container { max-width: 600px; margin: 20px auto; position: relative; }
+        canvas { max-height: 400px; }
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px 15px; text-align: center; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; font-weight: 600; color: #667eea; }
+        tr:hover td { background: #f5f5f5; }
+        .warning { color: #e74c3c; font-weight: bold; }
+        .bottlenecks-list { display: flex; flex-direction: column; gap: 12px; }
+        .bottleneck-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #fee2e2;
+            border-radius: 12px;
+            border-left: 4px solid #e74c3c;
+        }
+        .bottleneck-stage { font-weight: 600; color: #c0392b; }
+        .bottleneck-rate { font-size: 1.2rem; font-weight: bold; color: #e74c3c; }
+        .bottleneck-users { color: #666; }
+        .no-bottlenecks { text-align: center; padding: 30px; background: #d5f5e3; border-radius: 12px; color: #27ae60; }
+        .footer { text-align: center; padding: 20px; color: rgba(255,255,255,0.7); font-size: 0.8rem; }
+        @media (max-width: 768px) {
+            .stats-grid { gap: 15px; }
+            .stat-card { padding: 12px 20px; }
+            .stat-card .value { font-size: 1.3rem; }
+            th, td { padding: 8px 10px; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>📊 User Funnel Analysis</h1>
+        <div class="subtitle">Stage Definition & Conversion Rate Calculation</div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="label">Total Users</div>
+                <div class="value">10,000</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Sustained Users</div>
+                <div class="value">975</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Overall Retention</div>
+                <div class="value">9.8%</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>📈 Funnel Visualization</h2>
+        <div class="chart-container">
+            <canvas id="funnelChart"></canvas>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>⚠️ Bottlenecks (Dropoff > 30%)</h2>
+        <div class="bottlenecks-list">
+            <div class="bottleneck-item">
+                <span class="bottleneck-stage">First Value (HVA)</span>
+                <span class="bottleneck-rate">38.9%</span>
+                <span class="bottleneck-users">3,111 users lost</span>
+            </div>
+            
+            <div class="bottleneck-item">
+                <span class="bottleneck-stage">Repeat Usage</span>
+                <span class="bottleneck-rate">50.3%</span>
+                <span class="bottleneck-users">2,458 users lost</span>
+            </div>
+            
+            <div class="bottleneck-item">
+                <span class="bottleneck-stage">Sustained Usage</span>
+                <span class="bottleneck-rate">59.8%</span>
+                <span class="bottleneck-users">1,453 users lost</span>
+            </div>
+            </div>
+    </div>
+    
+    <div class="section">
+        <h2>📋 Funnel Details</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Stage</th>
+                        <th>Users</th>
+                        <th>Overall Conversion</th>
+                        <th>Conversion from Previous</th>
+                        <th>Dropoff Rate</th>
+                        <th>Users Lost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+        <tr>
+            <td>First Use</td>
+            <td>7,997</td>
+            <td>80.0%</td>
+            <td>80.0%</td>
+            <td class="">20.0%</td>
+            <td>2,003</td>
+        </tr>
+        
+        <tr>
+            <td>First Value (HVA)</td>
+            <td>4,886</td>
+            <td>48.9%</td>
+            <td>61.1%</td>
+            <td class="warning">38.9%</td>
+            <td>3,111</td>
+        </tr>
+        
+        <tr>
+            <td>Repeat Usage</td>
+            <td>2,428</td>
+            <td>24.3%</td>
+            <td>49.7%</td>
+            <td class="warning">50.3%</td>
+            <td>2,458</td>
+        </tr>
+        
+        <tr>
+            <td>Sustained Usage</td>
+            <td>975</td>
+            <td>9.8%</td>
+            <td>40.2%</td>
+            <td class="warning">59.8%</td>
+            <td>1,453</td>
+        </tr>
+        
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Generated by Skill 1.2B-1: Funnel Stage Definition & Conversion Analysis</p>
+        <p>Stages: Registered → First Use → First Value (HVA) → Repeat Usage → Sustained Usage</p>
+    </div>
+</div>
+
+<script>
+    const funnelData = {"stages": ["Registered", "First Use", "First Value (HVA)", "Repeat Usage", "Sustained Usage"], "users": [10000, 7997, 4886, 2428, 975], "dropoff_rates": [0.0, 20.03, 38.9, 50.31, 59.84]};
+    const ctx = document.getElementById('funnelChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: funnelData.stages,
+            datasets: [
+                {
+                    label: 'Users',
+                    data: funnelData.users,
+                    backgroundColor: 'rgba(102, 126, 234, 0.7)',
+                    borderColor: 'rgba(102, 126, 234, 1)',
+                    borderWidth: 1,
+                    borderRadius: 8,
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Dropoff Rate (%)',
+                    data: funnelData.dropoff_rates,
+                    type: 'line',
+                    borderColor: '#e74c3c',
+                    backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.3,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#e74c3c',
+                    yAxisID: 'y1'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { position: 'top' },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            let value = context.raw;
+                            if (context.dataset.label === 'Users') {
+                                return label + ': ' + value.toLocaleString();
+                            }
+                            return label + ': ' + value.toFixed(1) + '%';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: { display: true, text: 'Number of Users' },
+                    ticks: { callback: function(value) { return value.toLocaleString(); } }
+                },
+                y1: {
+                    position: 'right',
+                    beginAtZero: true,
+                    max: 100,
+                    title: { display: true, text: 'Dropoff Rate (%)' },
+                    ticks: { callback: function(value) { return value + '%'; } }
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>
